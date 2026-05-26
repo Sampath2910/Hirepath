@@ -1,0 +1,55 @@
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon\r
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+npm-debug.log*
+
+# Next.js
+hirepath/frontend/.next/
+hirepath/frontend/out/
+hirepath/frontend/.turbo/
+
+# Maven / Java
+**/target/
+**/*.log
+**/*.class
+**/*.jar
+**/*.war
+**/*.iml
+**/generated-sources/
+**/generated-test-sources/
+**/maven-status/
+
+# Local database files
+hirepath/backend/hirepath_data.mv.db
+hirepath/backend/hirepath_data.trace.db
+
+# IDEs
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Misc
+*.swp
+*~
+*.tmp
+
+# Ignore VS Code workspace storage if present
+**/.history/
+
+# Optional: ignore package manager lock files if not committed intentionally
+# Uncomment if you do not want package-lock.json tracked
+# package-lock.json
+
+# Ignore local Spring Boot application config with secrets
+hirepath/backend/src/main/resources/application.properties
