@@ -18,8 +18,8 @@ WORKDIR /app
 # Copy the built jar from the builder stage
 COPY --from=builder /app/target/hirepath-ai-backend-0.0.1-SNAPSHOT.jar app.jar
 
-# Expose the application port
+# Expose the application port (Render will automatically detect this, but we'll support dynamic $PORT too)
 EXPOSE 8080
 
-# Run the Spring Boot application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Run the Spring Boot application with serial GC, custom RAM usage, and unbuffered output for immediate logs
+ENTRYPOINT ["java", "-XX:+UseSerialGC", "-Xss512k", "-XX:MaxRAMPercentage=75.0", "-Dsun.stdout.buffered=false", "-Dsun.stderr.buffered=false", "-jar", "app.jar"]
