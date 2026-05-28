@@ -29,7 +29,7 @@ public class ResumeVersion {
     @Column(columnDefinition = "TEXT")
     private String keywordsInjected;
     
-    @Column(columnDefinition = "LONGTEXT")
+    @Column(columnDefinition = "TEXT")
     private String tailoredText;
     
     private LocalDateTime createdAt;
