@@ -34,7 +34,7 @@ hirepath/backend/hirepath_data.mv.db
 hirepath/backend/hirepath_data.trace.db
 
 # Local configuration containing keys
-hirepath/backend/src/main/resources/application.properties
+hirepath/backend/src/main/resources/application-local.properties
 
 # IDEs
 .vscode/
