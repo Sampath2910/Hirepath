@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from "@/config";
 import { Check, Eye, Download, MessageSquare, ArrowRight } from "lucide-react";
 import toast from "react-hot-toast";
 import { useAuth } from "@/context/AuthContext";
@@ -65,7 +66,7 @@ export default function JobCard(props: JobCardProps) {
     if (dbJobId) return dbJobId;
     try {
       const jobData = buildJobPayload();
-      const jobRes = await fetch("http://localhost:8080/api/jobs/scraped", {
+      const jobRes = await fetch(`${API_BASE_URL}/api/jobs/scraped`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(jobData)
@@ -96,7 +97,7 @@ export default function JobCard(props: JobCardProps) {
       if (!jobIdToUse) throw new Error("Could not retrieve job ID");
 
       const numericUserId = user.id.replace("user_", "");
-      const res = await fetch(`http://localhost:8080/api/resumes/version?userId=${numericUserId}&jobId=${jobIdToUse}`);
+      const res = await fetch(`${API_BASE_URL}/api/resumes/version?userId=${numericUserId}&jobId=${jobIdToUse}`);
       if (!res.ok) {
         throw new Error("Tailored resume version not found. Try upgrading again.");
       }
@@ -127,13 +128,13 @@ export default function JobCard(props: JobCardProps) {
       if (!jobIdToUse) throw new Error("Could not retrieve job ID");
 
       const numericUserId = user.id.replace("user_", "");
-      const res = await fetch(`http://localhost:8080/api/resumes/version?userId=${numericUserId}&jobId=${jobIdToUse}`);
+      const res = await fetch(`${API_BASE_URL}/api/resumes/version?userId=${numericUserId}&jobId=${jobIdToUse}`);
       if (!res.ok) {
         throw new Error("Tailored resume version not found. Try upgrading again.");
       }
       const data = await res.json();
       
-      const downloadRes = await fetch(`http://localhost:8080/api/resumes/download/${data.id}`);
+      const downloadRes = await fetch(`${API_BASE_URL}/api/resumes/download/${data.id}`);
       if (!downloadRes.ok) throw new Error("Failed to generate PDF file.");
       const blob = await downloadRes.blob();
       const url = window.URL.createObjectURL(blob);
@@ -167,7 +168,7 @@ export default function JobCard(props: JobCardProps) {
       if (!jobIdToUse) throw new Error("Could not retrieve job ID");
 
       const numericUserId = user.id.replace("user_", "");
-      const res = await fetch(`http://localhost:8080/api/resumes/cover-letter/${jobIdToUse}?userId=${numericUserId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/resumes/cover-letter/${jobIdToUse}?userId=${numericUserId}`, {
         method: "POST"
       });
       
@@ -245,7 +246,7 @@ export default function JobCard(props: JobCardProps) {
       // 1. Ensure job exists
       const jobData = buildJobPayload();
 
-      const jobRes = await fetch("http://localhost:8080/api/jobs/scraped", {
+      const jobRes = await fetch(`${API_BASE_URL}/api/jobs/scraped`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(jobData)
@@ -255,7 +256,7 @@ export default function JobCard(props: JobCardProps) {
       const savedJob = await jobRes.json();
 
       // 2. Call tailor API
-      const res = await fetch(`http://localhost:8080/api/resumes/tailor/${savedJob.id}?userId=${user.id.replace("user_", "")}`, {
+      const res = await fetch(`${API_BASE_URL}/api/resumes/tailor/${savedJob.id}?userId=${user.id.replace("user_", "")}`, {
         method: "POST"
       });
 
@@ -285,7 +286,7 @@ export default function JobCard(props: JobCardProps) {
       // 1. First ensure the job exists in the backend
       const jobData = buildJobPayload();
 
-      const jobRes = await fetch("http://localhost:8080/api/jobs/scraped", {
+      const jobRes = await fetch(`${API_BASE_URL}/api/jobs/scraped`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(jobData)
@@ -302,7 +303,7 @@ export default function JobCard(props: JobCardProps) {
         matchScore: Math.round(matchScore.score * 20) // Convert 5.0 to 100
       };
 
-      const appRes = await fetch("http://localhost:8080/api/applications", {
+      const appRes = await fetch(`${API_BASE_URL}/api/applications`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(appData)

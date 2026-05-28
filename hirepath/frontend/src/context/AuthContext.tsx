@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from "@/config";
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useRouter } from "next/navigation";
 
@@ -107,11 +108,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const checkBackendSession = async () => {
         try {
           const userId = session.id.replace("user_", "");
-          const res = await fetch(`http://localhost:8080/api/users/${userId}/profile`);
+          const res = await fetch(`${API_BASE_URL}/api/users/${userId}/profile`);
           if (!res.ok && (res.status === 404 || res.status === 401)) {
             console.warn("Backend session out of sync (H2 reset). Auto-resyncing user...");
             // Re-register user in backend H2
-            const regRes = await fetch("http://localhost:8080/api/users/register", {
+            const regRes = await fetch(`${API_BASE_URL}/api/users/register`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
@@ -129,7 +130,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               console.log("Auto-resync successful! New backend ID:", backendUser.id);
               // Re-sync plan
               try {
-                await fetch("http://localhost:8080/api/subscriptions/create", {
+                await fetch(`${API_BASE_URL}/api/subscriptions/create`, {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({
@@ -171,7 +172,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // Sync with backend API
     try {
-      const res = await fetch("http://localhost:8080/api/users/login", {
+      const res = await fetch(`${API_BASE_URL}/api/users/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -186,7 +187,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         sessionUser.plan = (backendUser.planType ? (backendUser.planType.charAt(0) + backendUser.planType.slice(1).toLowerCase()) : "Free") as "Free" | "Pro" | "Elite";
       } else if (res.status === 401 || res.status === 404) {
         // H2 database restarted and user doesn't exist in backend. Let's re-create this user in backend!
-        const regRes = await fetch("http://localhost:8080/api/users/register", {
+        const regRes = await fetch(`${API_BASE_URL}/api/users/register`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -200,7 +201,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           sessionUser.id = `user_${backendUser.id}`;
           // Sync plan to backend via subscription endpoint
           try {
-            await fetch("http://localhost:8080/api/subscriptions/create", {
+            await fetch(`${API_BASE_URL}/api/subscriptions/create`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
@@ -236,7 +237,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // Register user in backend first
     try {
-      const res = await fetch("http://localhost:8080/api/users/register", {
+      const res = await fetch(`${API_BASE_URL}/api/users/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -295,7 +296,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Sync subscription with backend database
     try {
       const userId = user.id.replace("user_", "");
-      await fetch("http://localhost:8080/api/subscriptions/create", {
+      await fetch(`${API_BASE_URL}/api/subscriptions/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

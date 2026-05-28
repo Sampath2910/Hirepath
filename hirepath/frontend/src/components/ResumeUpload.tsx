@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from "@/config";
 import { useState, useRef } from "react";
 import { Upload, FileText, CheckCircle2, AlertCircle } from "lucide-react";
 
@@ -50,8 +51,8 @@ export default function ResumeUpload({ onUploadComplete, userId }: ResumeUploadP
       formData.append("file", file);
 
       const url = userId
-        ? `http://localhost:8080/api/resumes/upload?userId=${userId.replace("user_", "")}`
-        : "http://localhost:8080/api/resumes/parse";
+        ? `${API_BASE_URL}/api/resumes/upload?userId=${userId.replace("user_", "")}`
+        : `${API_BASE_URL}/api/resumes/parse`;
 
       const response = await fetch(url, {
         method: "POST",

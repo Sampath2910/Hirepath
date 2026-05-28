@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from "@/config";
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import ResumeUpload from "@/components/ResumeUpload";
@@ -286,7 +287,7 @@ function SearchPageContent() {
     setSearchQuery(query);
     setIsSearching(true);
     try {
-      const res = await fetch(`http://localhost:8080/api/jobs/search?role=${encodeURIComponent(query)}&location=India`);
+      const res = await fetch(`${API_BASE_URL}/api/jobs/search?role=${encodeURIComponent(query)}&location=India`);
       if (res.ok) {
         const data = await res.json();
         const mappedJobs = Array.isArray(data) ? data.map(normalizeJob) : [];

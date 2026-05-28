@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from "@/config";
 import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Play, Pause, Clock, HelpCircle, Code, Briefcase, ChevronDown, CheckCircle2, RotateCcw, Sparkles } from "lucide-react";
@@ -37,7 +38,7 @@ function InterviewPrepContent() {
   async function fetchQuestions() {
     setIsLoading(true);
     try {
-      const res = await fetch(`http://localhost:8080/api/applications/${appId}/prep`);
+      const res = await fetch(`${API_BASE_URL}/api/applications/${appId}/prep`);
       if (res.ok) {
         const data = await res.json();
         setQuestions(data);

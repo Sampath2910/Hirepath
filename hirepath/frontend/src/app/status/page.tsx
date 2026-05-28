@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from "@/config";
 import { CheckCircle2, Clock, MessageSquare, Award, XCircle, Search, Filter, X, ChevronDown, Sparkles } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
@@ -36,7 +37,7 @@ export default function TrackerPage() {
   async function fetchApplications() {
     setIsLoading(true);
     try {
-      const res = await fetch(`http://localhost:8080/api/applications?userId=${user?.id.replace("user_", "")}`);
+      const res = await fetch(`${API_BASE_URL}/api/applications?userId=${user?.id.replace("user_", "")}`);
       if (res.ok) {
         const data = await res.json();
         // Map backend data to frontend interface
@@ -79,7 +80,7 @@ export default function TrackerPage() {
   const confirmStatusUpdate = async () => {
     if (!modalApp || !selectedNewStatus) return;
     try {
-      const res = await fetch(`http://localhost:8080/api/applications/${modalApp.id}/status`, {
+      const res = await fetch(`${API_BASE_URL}/api/applications/${modalApp.id}/status`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: selectedNewStatus })

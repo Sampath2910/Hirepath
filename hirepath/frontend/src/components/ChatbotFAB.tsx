@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from "@/config";
 import { useState, useRef, useEffect } from "react";
 import { MessageCircle, X, Send, Sparkles, Key, ChevronDown } from "lucide-react";
 
@@ -118,7 +119,7 @@ export default function ChatbotFAB() {
 
     try {
       // 1. Try real AI backend first (Multi-model)
-      const res = await fetch("http://localhost:8080/api/ai/chat", {
+      const res = await fetch(`${API_BASE_URL}/api/ai/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: userMessage, history: messages })

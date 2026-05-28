@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from "@/config";
 import { useState, useEffect } from "react";
 import { Search, Briefcase, FileText, CheckCircle, BarChart3, TrendingUp } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -37,8 +38,8 @@ export default function Dashboard() {
       try {
         const userId = user?.id?.replace("user_", "");
         const url = userId
-          ? `http://localhost:8080/api/stats/dashboard?userId=${userId}`
-          : "http://localhost:8080/api/stats/dashboard";
+          ? `${API_BASE_URL}/api/stats/dashboard?userId=${userId}`
+          : `${API_BASE_URL}/api/stats/dashboard`;
 
         const res = await fetch(url);
         if (res.ok) {

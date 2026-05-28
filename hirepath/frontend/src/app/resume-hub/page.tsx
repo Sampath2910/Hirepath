@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from "@/config";
 import { useState, useEffect, useRef } from "react";
 import { FileText, Download, Eye, ExternalLink, TrendingUp, AlertTriangle, X, Upload, CheckCircle } from "lucide-react";
 import toast from "react-hot-toast";
@@ -43,7 +44,7 @@ export default function ResumeHubPage() {
     formData.append("file", file);
 
     try {
-      const res = await fetch(`http://localhost:8080/api/resumes/upload?userId=${user.id.replace("user_", "")}`, {
+      const res = await fetch(`${API_BASE_URL}/api/resumes/upload?userId=${user.id.replace("user_", "")}`, {
         method: "POST",
         body: formData
       });
@@ -70,7 +71,7 @@ export default function ResumeHubPage() {
   async function fetchVersions() {
     setIsLoading(true);
     try {
-      const res = await fetch(`http://localhost:8080/api/resumes/versions?userId=${user?.id.replace("user_", "")}`);
+      const res = await fetch(`${API_BASE_URL}/api/resumes/versions?userId=${user?.id.replace("user_", "")}`);
       if (res.ok) {
         const data = await res.json();
         setVersions(data);
@@ -148,7 +149,7 @@ export default function ResumeHubPage() {
                     <Eye size={14} /> Preview
                   </button>
                   <a 
-                    href={`http://localhost:8080/api/resumes/download/${v.id}`}
+                    href={`${API_BASE_URL}/api/resumes/download/${v.id}`}
                     className="flex-1 btn-secondary py-2 text-xs flex items-center justify-center gap-1.5"
                     download
                   >
@@ -255,4 +256,3 @@ export default function ResumeHubPage() {
     </div>
   );
 }
-
