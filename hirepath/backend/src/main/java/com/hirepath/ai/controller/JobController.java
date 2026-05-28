@@ -38,10 +38,13 @@ public class JobController {
         List<Job> allJobs = new java.util.ArrayList<>(existingJobs);
 
         // 2. Parallelize scraping tasks using CompletableFuture to prevent request timeouts
-        java.util.concurrent.CompletableFuture<List<Job>> linkedInFuture = java.util.concurrent.CompletableFuture.supplyAsync(() -> scraperService.scrapeLinkedIn(role, location));
-        java.util.concurrent.CompletableFuture<List<Job>> naukriFuture = java.util.concurrent.CompletableFuture.supplyAsync(() -> scraperService.scrapeNaukri(role));
-        java.util.concurrent.CompletableFuture<List<Job>> wwrFuture = java.util.concurrent.CompletableFuture.supplyAsync(() -> scraperService.scrapeWWR(role));
-        java.util.concurrent.CompletableFuture<List<Job>> remoteOkFuture = java.util.concurrent.CompletableFuture.supplyAsync(() -> scraperService.scrapeRemoteOK(role));
+        // Run Playwright scrapers on a single-threaded executor to prevent RAM overload (max 1 Chromium instance at a time)
+        java.util.concurrent.ExecutorService playwrightExecutor = java.util.concurrent.Executors.newSingleThreadExecutor();
+
+        java.util.concurrent.CompletableFuture<List<Job>> linkedInFuture = java.util.concurrent.CompletableFuture.supplyAsync(() -> scraperService.scrapeLinkedIn(role, location), playwrightExecutor);
+        java.util.concurrent.CompletableFuture<List<Job>> naukriFuture = java.util.concurrent.CompletableFuture.supplyAsync(() -> scraperService.scrapeNaukri(role), playwrightExecutor);
+        java.util.concurrent.CompletableFuture<List<Job>> wwrFuture = java.util.concurrent.CompletableFuture.supplyAsync(() -> scraperService.scrapeWWR(role), playwrightExecutor);
+        java.util.concurrent.CompletableFuture<List<Job>> remoteOkFuture = java.util.concurrent.CompletableFuture.supplyAsync(() -> scraperService.scrapeRemoteOK(role), playwrightExecutor);
         java.util.concurrent.CompletableFuture<List<Job>> adzunaFuture = java.util.concurrent.CompletableFuture.supplyAsync(() -> scraperService.fetchAdzunaJobs(role, location));
         java.util.concurrent.CompletableFuture<List<Job>> reedFuture = java.util.concurrent.CompletableFuture.supplyAsync(() -> scraperService.fetchReedJobs(role));
 
@@ -53,6 +56,8 @@ public class JobController {
                 .join();
         } catch (Exception e) {
             System.err.println("Parallel scraping timeout or interruption: " + e.getMessage());
+        } finally {
+            playwrightExecutor.shutdownNow();
         }
 
         List<Job> scrapedJobs = new ArrayList<>();
