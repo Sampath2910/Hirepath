@@ -33,6 +33,9 @@ hirepath/frontend/.turbo/
 hirepath/backend/hirepath_data.mv.db
 hirepath/backend/hirepath_data.trace.db
 
+# Local configuration containing keys
+hirepath/backend/src/main/resources/application.properties
+
 # IDEs
 .vscode/
 .idea/
@@ -50,6 +53,3 @@ hirepath/backend/hirepath_data.trace.db
 # Optional: ignore package manager lock files if not committed intentionally
 # Uncomment if you do not want package-lock.json tracked
 # package-lock.json
-
-# Ignore local Spring Boot application config with secrets
-hirepath/backend/src/main/resources/application.properties

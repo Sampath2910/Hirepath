@@ -1,0 +1,79 @@
+# =============================================================
+# HirePath Render Blueprint Specification
+# Use this to deploy the entire stack with one click on Render
+# =============================================================
+databases:
+  - name: hirepath-db
+    databaseName: hirepath
+    user: hirepath_user
+    plan: free
+
+services:
+  # =============================================================
+  # Spring Boot Backend Service
+  # =============================================================
+  - type: web
+    name: hirepath-backend
+    env: docker
+    dockerfilePath: Dockerfile
+    dockerContext: hirepath/backend
+    plan: free
+    envVars:
+      # Database connection variables resolved dynamically from Render DB
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+      - key: DB_HOST
+        fromDatabase:
+          name: hirepath-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: hirepath-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: hirepath-db
+          property: database
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: hirepath-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: hirepath-db
+          property: password
+      
+      # Database Driver configuration
+      - key: SPRING_DATASOURCE_DRIVER
+        value: org.postgresql.Driver
+      - key: SPRING_JPA_DATABASE_PLATFORM
+        value: org.hibernate.dialect.PostgreSQLDialect
+
+      # Production Secrets (User to supply via Render Dashboard)
+      - key: CLAUDE_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: ADZUNA_APP_ID
+        sync: false
+      - key: ADZUNA_APP_KEY
+        sync: false
+      - key: REED_API_KEY
+        sync: false
+
+  # =============================================================
+  # Next.js Frontend Service
+  # =============================================================
+  - type: web
+    name: hirepath-frontend
+    env: docker
+    dockerfilePath: Dockerfile
+    dockerContext: hirepath/frontend
+    plan: free
+    envVars:
+      # Next.js environment variable mapping backend public URL
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          name: hirepath-backend
+          type: web
+          property: url

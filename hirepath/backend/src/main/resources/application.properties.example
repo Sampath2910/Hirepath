@@ -1,37 +1,48 @@
-# Copy this file to application.properties and fill in real API keys for local development.
-# Do NOT commit your real keys to GitHub. Instead, set them as environment variables in CI or your shell.
-
 spring.application.name=hirepath-ai-backend
 
+# =============================================================
 # DATABASE CONFIGURATION
-# By default the project uses H2 file-based DB for development (no external DB required).
-spring.datasource.url=jdbc:h2:file:./hirepath_data;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE
-spring.datasource.driver-class-name=org.h2.Driver
-spring.datasource.username=sa
-spring.datasource.password=
+# =============================================================
+# Default: H2 File-Based DB (Automatic fallback for local development)
+spring.datasource.url=${SPRING_DATASOURCE_URL:jdbc:h2:file:./hirepath_data;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE}
+spring.datasource.username=${SPRING_DATASOURCE_USERNAME:sa}
+spring.datasource.password=${SPRING_DATASOURCE_PASSWORD:}
+spring.datasource.driver-class-name=${SPRING_DATASOURCE_DRIVER:org.h2.Driver}
+spring.jpa.database-platform=${SPRING_JPA_DATABASE_PLATFORM:org.hibernate.dialect.H2Dialect}
+
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2-console
 
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=false
 
-# Security (development)
+# Security Configuration (Development — Permit All)
 spring.security.user.name=admin
 spring.security.user.password=admin
+
+# File Upload Limit
+spring.servlet.multipart.max-file-size=10MB
+spring.servlet.multipart.max-request-size=10MB
 
 # Server Port
 server.port=8080
 
-# AI API KEYS
-# Export these in your shell or CI: e.g. `export CLAUDE_API_KEY=sk-...` (Linux/macOS) or set them in your environment variables on Windows.
-claude.api.key=
+# =============================================================
+# AI API KEYS — Set as environment variables in production!
+# =============================================================
+claude.api.key=${CLAUDE_API_KEY:YOUR_CLAUDE_API_KEY_HERE}
 claude.api.url=https://api.anthropic.com/v1/messages
 
-# Gemini (fallback)
-gemini.api.key=
+# Gemini API Configuration (Fallback for AI)
+gemini.api.key=${GEMINI_API_KEY:YOUR_GEMINI_API_KEY_HERE}
 gemini.api.url=https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
 
-# Adzuna
-adzuna.app.id=
-adzuna.app.key=
+# Adzuna Job API
+adzuna.app.id=${ADZUNA_APP_ID:YOUR_ADZUNA_APP_ID_HERE}
+adzuna.app.key=${ADZUNA_APP_KEY:YOUR_ADZUNA_APP_KEY_HERE}
 
-# Reed
-reed.api.key=
+# Reed.co.uk API (UK jobs only)
+reed.api.key=${REED_API_KEY:YOUR_REED_API_KEY_HERE}
+
+# Spring WebClient Config
+spring.codec.max-in-memory-size=2MB
